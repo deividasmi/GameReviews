@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 
@@ -20,10 +21,10 @@ class Game(models.Model):
 
 class Review(models.Model):
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    content = models.TextField(max_length=500)
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    game_score = models.IntegerField(null=True, blank=True)
+    game_score = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(10), MinValueValidator(1)])
     review_score = models.IntegerField(null=True, blank=True)
     score_count = models.IntegerField(null=True, blank=True)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

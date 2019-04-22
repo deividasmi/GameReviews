@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Review, Game
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 
@@ -17,6 +18,18 @@ class ReviewListView(ListView):
     template_name = 'reviews/home.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    paginate_by = 5
+
+
+class UserReviewListView(ListView):
+    model = Review
+    template_name = 'reviews/user_reviews.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Review.objects.filter(author=user).order_by('-date_posted')
 
 
 class ReviewDetailView(DetailView):
@@ -26,6 +39,8 @@ class ReviewDetailView(DetailView):
 class GameCreateView(LoginRequiredMixin, CreateView):
     model = Game
     fields = ['title', 'description', 'developer', 'release_date']
+    success_url = '/'
+
     def form_valid(self, form):
         return super().form_valid(form)
 
@@ -33,7 +48,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
 class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
     fields = ['title', 'content', 'game_score', 'game']
-
+    
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.review_score = 0
