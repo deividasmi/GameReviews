@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
-from .models import Review
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Review, Game
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 
 
@@ -23,10 +23,16 @@ class ReviewDetailView(DetailView):
     model = Review
 
 
+class GameCreateView(LoginRequiredMixin, CreateView):
+    model = Game
+    fields = ['title', 'description', 'developer', 'release_date']
+    def form_valid(self, form):
+        return super().form_valid(form)
+
 
 class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
-    fields = ['title', 'content', 'game_score']
+    fields = ['title', 'content', 'game_score', 'game']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -34,6 +40,31 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         form.instance.score_count = 0
         return super().form_valid(form)
         
+
+class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Review
+    fields = ['title', 'content', 'game_score', 'game']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        review = self.get_object()
+        if self.request.user == review.author:
+            return True
+        return False
+
+
+class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Review
+    success_url = '/'
+
+    def test_func(self):
+        review = self.get_object()
+        if self.request.user == review.author:
+            return True
+        return False
 
 
 def about(request):
