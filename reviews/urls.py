@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ReviewListView, ReviewDetailView, ReviewCreateView, GameCreateView, ReviewUpdateView, ReviewDeleteView, UserReviewListView
+from .views import ReviewListView, ReviewDetailView, ReviewCreateView, GameCreateView, ReviewUpdateView, ReviewDeleteView, UserReviewListView, GameDeleteView, GameListView, GameUpdateView
 from . import views
 
 
@@ -12,6 +12,9 @@ urlpatterns = [
     path('review/<int:pk>/delete/', ReviewDeleteView.as_view(), name='reviews-delete'),
     path('review/new/', ReviewCreateView.as_view(), name='reviews-create'),
     path('game/new/', GameCreateView.as_view(), name='game-create'),
+    path('game/<int:pk>/update/', GameUpdateView.as_view(), name='game-update'),
+    path('game/<int:pk>/delete/', GameDeleteView.as_view(), name='game-delete'),
+    path('games/', GameListView.as_view(), name='games-list'),
 
 
 ]

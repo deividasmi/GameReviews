@@ -36,6 +36,14 @@ class ReviewDetailView(DetailView):
     model = Review
 
 
+class GameListView(ListView):
+    model = Game
+    template_name = 'reviews/games_list.html'
+    context_object_name = 'games'
+    ordering = ['-id']
+    paginate_by = 5
+
+
 class GameCreateView(LoginRequiredMixin, CreateView):
     model = Game
     fields = ['title', 'description', 'developer', 'release_date']
@@ -43,6 +51,33 @@ class GameCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+
+class GameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Game
+    fields = ['title', 'description', 'developer', 'release_date']
+    success_url = '/games'
+
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def test_func(self):
+        game = self.get_object()
+        if self.request.user.is_staff:
+            return True
+        return False
+
+
+class GameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Game
+    success_url = '/games'
+
+    def test_func(self):
+        game = self.get_object()
+        if self.request.user.is_staff:
+            return True
+        return False
 
 
 class ReviewCreateView(LoginRequiredMixin, CreateView):
