@@ -13,6 +13,9 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Profile Info</legend>
                 {{ u_form|crispy }}
+                <small class="text-muted">
+                    <a class="ml-2" href="{%url 'password_reset'%}">Change Password</a>
+                  </small>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Update</button>
