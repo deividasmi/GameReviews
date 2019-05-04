@@ -1,12 +1,16 @@
 {%extends "reviews/base.html"%}
 {%block content%}
-    <h1>List of Games</h1>
+    <div>
+        <h1>List of Games</h1>
+        <a class="btn btn-outline-info btn-sm mt-1 mb-1" href="{% url 'game-create'%}">Add new</a>
+        <p></p>
+    </div> 
 {%for game in games%}
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
+                <h2><a class="article-title" href="{%url 'game-update' game.id%}">{{ game.title }}</a></h2>
             </div>
-            <h2><a class="article-title" href="{%url 'game-update' game.id%}">{{ game.title }}</a></h2>
             <p class="article-content">{{ game.description }}</p>
             <p class="article-content">{{ game.developer }}</p>
             <p class="article-content">{{ game.release_date }}</p>
