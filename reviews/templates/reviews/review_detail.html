@@ -6,6 +6,7 @@
             <div class="article-metadata">
                 <a class="mr-2" href="{%url 'user-reviews' object.author%}">{{ object.author }}</a>
                 <small class="text-muted">{{ object.date_posted|date:"Y F d" }}</small>
+                
                 {% if object.author == user %}
                 <div>
                     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'reviews-update' object.id%}">Update</a>
@@ -15,6 +16,7 @@
             </div>
             <h2 class="article-title">{{ object.title }}</h2>
             <p class="article-content">{{ object.content }}</p>
+            <p class="text-content"><b>Score: {{ object.game_score}}</b></p>
         </div>
     </article>
-{%endblock content%}
+{%endblock content%}s
